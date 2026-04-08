@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thiệp Mời - Hoàng Huy Anh Tuấn</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 50%, #fce7f3 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background Pattern */
+    .background-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
+      background-image: url('https://images.unsplash.com/photo-1707606853683-bebbaf17b4e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080');
+      background-size: cover;
+      background-position: center;
+      pointer-events: none;
+    }
+
+    /* Floating Hearts Container */
+    .floating-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .heart-float {
+      position: absolute;
+      bottom: -50px;
+      font-size: 30px;
+      color: rgba(244, 114, 182, 0.3);
+      animation: float-up 15s linear infinite;
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      border: 4px solid #fbcfe8;
+      animation: fade-in-up 0.8s ease-out;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #f472b6 0%, #fb7185 50%, #f472b6 100%);
+      padding: 60px 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-heart-bg {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .heart-large {
+      font-size: 100px;
+      color: white;
+      display: inline-block;
+      margin-bottom: 20px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 3em;
+      margin-bottom: 15px;
+      font-family: Georgia, serif;
+    }
+
+    .header-divider {
+      width: 130px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.5);
+      margin: 0 auto;
+      border-radius: 10px;
+    }
+
+    /* Content */
+    .content {
+      padding: 50px 40px;
+    }
+
+    .greeting {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .greeting-text {
+      font-size: 2em;
+      color: #ec4899;
+      font-family: Georgia, serif;
+      font-style: italic;
+      margin-bottom: 25px;
+    }
+
+    .heart-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .heart-small {
+      font-size: 24px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .invitation-box {
+      background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 100%);
+      border-radius: 20px;
+      padding: 40px;
+      border: 2px solid #fbcfe8;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .invitation-box p {
+      font-size: 1.3em;
+      color: #374151;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .name-highlight {
+      font-size: 2em;
+      color: #ec4899;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+
+    .heart-center {
+      font-size: 32px;
+      color: #ec4899;
+    }
+
+    /* Details Section */
+    .details {
+      margin: 30px 0;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      border: 2px solid #fce7f3;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .detail-item:hover {
+      border-color: #fbcfe8;
+    }
+
+    .icon-box {
+      background: #fce7f3;
+      border-radius: 50%;
+      padding: 15px;
+      flex-shrink: 0;
+    }
+
+    .icon-box.rose {
+      background: #ffe4e6;
+    }
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: #ec4899;
+    }
+
+    .detail-content h3 {
+      color: #ec4899;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .detail-content p {
+      color: #1f2937;
+      font-size: 1.1em;
+      line-height: 1.6;
+    }
+
+    /* Message Box */
+    .message-box {
+      background: linear-gradient(135deg, #fce7f3 0%, white 50%, #ffe4e6 100%);
+      border-radius: 20px;
+      padding: 40px;
+      border: 2px solid #fbcfe8;
+      text-center;
+      margin: 40px 0;
+    }
+
+    .message-box p {
+      color: #374151;
+      font-size: 1.2em;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .message-box .highlight {
+      color: #ec4899;
+      font-size: 1.1em;
+    }
+
+    /* RSVP Button */
+    .rsvp-section {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    .rsvp-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      background: linear-gradient(135deg, #ec4899 0%, #fb7185 50%, #ec4899 100%);
+      color: white;
+      padding: 18px 50px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
+      transition: all 0.3s;
+    }
+
+    .rsvp-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(236, 72, 153, 0.4);
+    }
+
+    .button-heart {
+      font-size: 24px;
+    }
+
+    /* Decorative Hearts Row */
+    .hearts-decoration {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding-top: 30px;
+    }
+
+    .hearts-decoration span {
+      font-size: 16px;
+      color: #f9a8d4;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 50%, #fce7f3 100%);
+      padding: 30px;
+      text-align: center;
+      border-top: 2px solid #fbcfe8;
+    }
+
+    .footer p {
+      color: #ec4899;
+      margin-bottom: 10px;
+    }
+
+    .footer .sub-text {
+      color: #6b7280;
+      font-size: 0.85em;
+    }
+
+    /* Decorative Floating Hearts */
+    .decoration-heart {
+      position: absolute;
+      opacity: 0.2;
+      font-size: 130px;
+      color: #f472b6;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .decoration-heart.left {
+      top: -40px;
+      left: -40px;
+    }
+
+    .decoration-heart.right {
+      bottom: -40px;
+      right: -40px;
+      animation-delay: 1s;
+    }
+
+    /* Animations */
+    @keyframes float-up {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      90% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.15);
+      }
+      50% {
+        transform: scale(1);
+      }
+      75% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.95);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+      
+      .greeting-text {
+        font-size: 1.5em;
+      }
+      
+      .name-highlight {
+        font-size: 1.5em;
+      }
+      
+      .content {
+        padding: 30px 20px;
+      }
+      
+      .invitation-box {
+        padding: 25px;
+      }
+      
+      .detail-item {
+        padding: 20px;
+      }
+      
+      .message-box {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Overlay -->
+  <div class="background-overlay"></div>
+
+  <!-- Floating Hearts -->
+  <div class="floating-hearts" id="floatingHearts"></div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="card">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-heart-bg" style="top: 20px; left: 20px; font-size: 60px;">❤️</div>
+        <div class="header-heart-bg" style="bottom: 20px; right: 20px; font-size: 60px;">❤️</div>
+        <div class="header-heart-bg" style="top: 40%; left: 15%; font-size: 50px;">💕</div>
+        <div class="header-heart-bg" style="top: 30%; right: 20%; font-size: 50px;">💕</div>
+        
+        <div class="heart-large">❤️</div>
+        <h1>Thiệp Mời</h1>
+        <div class="header-divider"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Greeting -->
+        <div class="greeting">
+          <p class="greeting-text">Gửi em bé của anh</p>
+          <div class="heart-row">
+            <span class="heart-small" style="animation-delay: 0s; color: #f472b6;">❤️</span>
+            <span class="heart-small" style="animation-delay: 0.3s; color: #fb7185;">❤️</span>
+            <span class="heart-small" style="animation-delay: 0.6s; color: #f472b6;">❤️</span>
+          </div>
+        </div>
+
+        <!-- Invitation Box -->
+        <div class="invitation-box">
+          <p>Kính mời em tham dự buổi tiệc thân mật cùng anh</p>
+          <p class="name-highlight">Hoàng Huy Anh Tuấn</p>
+          <div class="heart-center">❤️</div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="details">
+          <!-- Time -->
+          <div class="detail-item">
+            <div class="icon-box">
+              <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <h3>Thời gian</h3>
+              <p>20:00 - Thứ 7, ngày 11 tháng 4 năm 2026</p>
+            </div>
+          </div>
+
+          <!-- Dress Code -->
+          <div class="detail-item">
+            <div class="icon-box rose">
+              <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke-width="2"/>
+                <path d="M15 2H9a1 1 0 0 0-1 1v2h8V3a1 1 0 0 0-1-1z" stroke-width="2"/>
+                <path d="M9 12h6m-6 4h6" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <h3>Trang phục</h3>
+              <p>Lịch sự, trang trọng</p>
+            </div>
+          </div>
+
+          <!-- Transportation -->
+          <div class="detail-item">
+            <div class="icon-box">
+              <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M5 13l2 2m0 0l2-2m-2 2V9m12 4l-2 2m0 0l-2-2m2 2V9m-7 10h8a2 2 0 002-2V7a2 2 0 00-2-2H8a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <h3>Đưa đón</h3>
+              <p>Phía bên tổ chức sẽ sắp xếp xe đưa đón cho bạn</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="message-box">
+          <p>Sự có mặt của em là niềm vui to lớn và là điều vô cùng quan trọng trong buổi lễ.</p>
+          <p class="highlight">Kính mong em có mặt đúng giờ 💕</p>
+        </div>
+
+        <!-- RSVP Button -->
+        <div class="rsvp-section">
+          <button class="rsvp-button" onclick="confirmAttendance()">
+            <span class="button-heart">❤️</span>
+            <span>Xác nhận tham dự</span>
+            <span class="button-heart">❤️</span>
+          </button>
+        </div>
+
+        <!-- Decorative Hearts -->
+        <div class="hearts-decoration">
+          <span style="animation-delay: 0s;">❤️</span>
+          <span style="animation-delay: 0.2s;">❤️</span>
+          <span style="animation-delay: 0.4s;">❤️</span>
+          <span style="animation-delay: 0.6s;">❤️</span>
+          <span style="animation-delay: 0.8s;">❤️</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>Rất mong được gặp em ❤️</p>
+        <p class="sub-text">Thiệp mời được gửi với tình cảm chân thành nhất</p>
+      </div>
+    </div>
+
+    <!-- Decorative Floating Hearts -->
+    <div class="decoration-heart left">❤️</div>
+    <div class="decoration-heart right">❤️</div>
+  </div>
+
+  <script>
+    // Create floating hearts
+    function createFloatingHearts() {
+      const container = document.getElementById('floatingHearts');
+      const heartCount = 20;
+
+      for (let i = 0; i < heartCount; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-float';
+        heart.textContent = '❤️';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        heart.style.animationDuration = (15 + Math.random() * 5) + 's';
+        container.appendChild(heart);
+      }
+    }
+
+    // Confirm attendance
+    function confirmAttendance() {
+       fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxFBEK7Vs8MNDlLC869EE9ukrjDPWT0ClC2DZxnoezqdDuR-h3iWmkUPAkkcI4SU5E/exec", {
+        method: "POST",
+        mode: "no-cors"
+      });
+
+      alert('Anh đã nhận được xác nhận của em rồi ❤️\n\nAnh rất mong chờ được gặp em! 💕');
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', function() {
+      createFloatingHearts();
+    });
+  </script>
+</body>
+</html>
